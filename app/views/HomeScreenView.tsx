@@ -53,34 +53,33 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
       // style={HomeScreenStyle}
     />
   );
-  console.log('previousLocations', previousLocations)
+  console.log("previousLocations", previousLocations);
   return (
     <SafeAreaView style={GlobleStyles.appContainer}>
       <StatusBar />
       <Text style={HomeScreenStyle.heading}>Location Manager</Text>
       <Text style={HomeScreenStyle.subHeading}>Current Location</Text>
-      {/* <Icon name='map' size={50}/> */}
+   
       <CurrentLocationCard
-        name={currentLocation.results[0].formatted}
-        time={currentLocation.timestamp.created_http}
+        name={previousLocations[0].results[0].formatted}
+        time={previousLocations[0].timestamp.created_http}
         onCardPress={() => {
           handleCardPress(
-            currentLocation.results[0].geometry.lat,
-            currentLocation.results[0].geometry.lng
+            previousLocations[0].results[0].geometry.lat,
+            previousLocations[0].results[0].geometry.lng
           );
         }}
-        // onRemove={}
-        // style={HomeScreenStyle}
       />
       <Text style={HomeScreenStyle.subHeading}>Previous Locations</Text>
-      {previousLocations.length > 0 ?
+      {previousLocations.length > 0 ? (
         <FlatList
           data={previousLocations}
-          keyExtractor={(item) => item.id}
+          // keyExtractor={(item) => item.id}
+          // initialScrollIndex={1}
           renderItem={renderItem}
           extraData={refreshFlatlist}
-        /> : null
-      }
+        />
+      ) : null}
       <Button
         title="Remove All Locations"
         color={AppColor.red}

@@ -56,9 +56,9 @@ const HomeScreen = () => {
     } else {
       console.log("Error in getting data");
     }
-    if(param) {
-      moveCurrentToPrevious(currentLocation);
-    }
+    // if(param) {
+    //   moveCurrentToPrevious(currentLocation);
+    // }
   };
 
   const handleCardPress = (lat: number, lng: number, index?: number) => {
@@ -67,16 +67,16 @@ const HomeScreen = () => {
     // console.log("card pressed")
   };
 
-  const moveCurrentToPrevious = (cLocation: any) => {
-    console.log('cLocation', cLocation)
-    let localArray = previousLocations;
-    console.log('localArray in Move before', localArray)
-    localArray.push(cLocation);
-    console.log('localArray in Move after', localArray)
-    setPreviousLocations(localArray);
-    console.log('previousLocations in Move', previousLocations);
+  // const moveCurrentToPrevious = (cLocation: any) => {
+  //   console.log('cLocation', cLocation)
+  //   let localArray = previousLocations;
+  //   console.log('localArray in Move before', localArray)
+  //   localArray.push(cLocation);
+  //   console.log('localArray in Move after', localArray)
+  //   setPreviousLocations(localArray);
+  //   console.log('previousLocations in Move', previousLocations);
 
-  }
+  // }
 
   const removeLocation = (index) => {
     console.log("removeLocation pressed");
