@@ -24,41 +24,38 @@ const HomeScreen = () => {
     latitude: 52.387783,
     longitude: 9.7334394,
   };
+  const [count, setCount] = useState(0);
   const [refreshFlatlist, setRefreshFlatList] = useState(false);
+  const [intervalRunning, setIntervalRunning] = useState(false);
 
   useEffect(() => {
-    // trueOrNot()
-    callAPI(false, currentLocation);
-    setInterval(() => {
-      callAPI(true, currentLocation);
-      // moveCurrentToPrevious(currentLocation);
-    }, 5000);
-    // setInterval()
+    pushLocation();
   }, []);
 
-  // useEffect(() => {
-  //   moveCurrentToPrevious(currentLocation);
-  // }, [currentLocation]);
-
-  const callAPI = async (param: boolean, currentLocation: any) => {
-    let localVariable = await reverseGeocode(payload);
-    if (localVariable != null) {
-      console.log("localVariable", localVariable);
-      setCurrentLocation(localVariable);
-      // setPreviousLocations([...previousLocations, localVariable])
-      console.log("previousLocations in callAPI before", previousLocations);
-      let localArray = previousLocations;
-      localArray.push(localVariable);
-      setPreviousLocations(localArray);
-      console.log("previousLocations in callAPI after", previousLocations);
-
-      console.log("Data fetched successtully");
+  const pushLocation = () => {
+    if (previousLocations.length === 5) {
+      console.log("Length exceeded");
+    } else if (!intervalRunning) {
+      setIntervalRunning(true);
+      console.log("IntervalRunning", intervalRunning);
+      console.log("Interval started");
+      let myInterval = setInterval(async () => {
+        let localArray = previousLocations;
+        let newLocation: any = await reverseGeocode({
+          latitude: 18.519397,
+          longitude: 73.8553399,
+        });
+        localArray.unshift(newLocation);
+        setPreviousLocations([...previousLocations], localArray);
+        if (previousLocations.length >= 5) {
+          clearInterval(myInterval);
+          setIntervalRunning(false);
+          console.log("Cleared interval", myInterval);
+        }
+      }, 1000);
     } else {
-      console.log("Error in getting data");
+      console.log("Another interval is running");
     }
-    // if(param) {
-    //   moveCurrentToPrevious(currentLocation);
-    // }
   };
 
   const handleCardPress = (lat: number, lng: number, index?: number) => {
@@ -67,18 +64,7 @@ const HomeScreen = () => {
     // console.log("card pressed")
   };
 
-  // const moveCurrentToPrevious = (cLocation: any) => {
-  //   console.log('cLocation', cLocation)
-  //   let localArray = previousLocations;
-  //   console.log('localArray in Move before', localArray)
-  //   localArray.push(cLocation);
-  //   console.log('localArray in Move after', localArray)
-  //   setPreviousLocations(localArray);
-  //   console.log('previousLocations in Move', previousLocations);
-
-  // }
-
-  const removeLocation = (index) => {
+  const removeLocation = (index: number) => {
     console.log("removeLocation pressed");
     console.log("index", index);
     let localArray = previousLocations;
@@ -88,6 +74,7 @@ const HomeScreen = () => {
     setPreviousLocations(localArray);
     console.log("After:", localArray);
     setRefreshFlatList(!refreshFlatlist);
+    pushLocation();
   };
 
   const removeAllLocations = () => {
@@ -100,22 +87,22 @@ const HomeScreen = () => {
       console.log("Error in deleting locations");
     }
     setRefreshFlatList(!refreshFlatlist);
+    pushLocation();
   };
 
   return (
-    //  Object.keys(currentLocation).length > 0 ?
-    previousLocations.length > 0 ? (
-      <HomeScreenView
-        currentLocation={currentLocation}
-        previousLocations={previousLocations}
-        refreshFlatlist={refreshFlatlist}
-        handleCardPress={handleCardPress}
-        removeLocation={removeLocation}
-        removeAllLocations={removeAllLocations}
-      />
-    ) : (
-      null
-    )
+    // previousLocations.length > 0 ? (
+    <HomeScreenView
+      currentLocation={currentLocation}
+      previousLocations={previousLocations}
+      refreshFlatlist={refreshFlatlist}
+      handleCardPress={handleCardPress}
+      removeLocation={removeLocation}
+      removeAllLocations={removeAllLocations}
+    />
+    // ) : (
+    //   null
+    // )
   );
 };
 

@@ -35,51 +35,90 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
     removeAllLocations,
   } = props;
 
-  const renderItem = ({ item, index }) => (
-    <PreviousLocationCard
-      key={index}
-      name={item.results[0].formatted}
-      time={item.timestamp.created_http}
-      onCardPress={() => {
-        handleCardPress(
-          item.results[0].geometry.lat,
-          item.results[0].geometry.lng,
-          index
-        );
-      }}
-      onRemove={() => {
-        removeLocation(index);
-      }}
-      // style={HomeScreenStyle}
-    />
-  );
-  console.log("previousLocations", previousLocations);
+  const getItemLayout = (data, index: number) => ({
+    length: 93.71428680419922,
+    offset: index * 93.71428680419922 * index,
+    index,
+  });
+
+  const renderItem = ({ item, index }) => {
+    if (index < previousLocations.length - 1) {
+      return (
+        <PreviousLocationCard
+          key={index}
+          name={
+            // item.results[0].formatted
+            index
+          }
+          time={item.timestamp.created_http}
+          onCardPress={() => {
+            handleCardPress(
+              item.results[0].geometry.lat,
+              item.results[0].geometry.lng,
+              index
+            );
+          }}
+          onRemove={() => {
+            removeLocation(index);
+          }}
+          // style={HomeScreenStyle}
+        />
+      );
+    } else {
+      return null;
+    }
+  };
+  // console.log("previousLocations in View", previousLocations);
+  // console.log("previousLocations length in View", previousLocations.length);
   return (
     <SafeAreaView style={GlobleStyles.appContainer}>
       <StatusBar />
       <Text style={HomeScreenStyle.heading}>Location Manager</Text>
       <Text style={HomeScreenStyle.subHeading}>Current Location</Text>
-   
-      <CurrentLocationCard
-        name={previousLocations[0].results[0].formatted}
-        time={previousLocations[0].timestamp.created_http}
+      {/* <Icon name='map' size={50}/> */}
+      {/* <CurrentLocationCard
+        name={currentLocation.results[0].formatted}
+        time={currentLocation.timestamp.created_http}
         onCardPress={() => {
           handleCardPress(
-            previousLocations[0].results[0].geometry.lat,
-            previousLocations[0].results[0].geometry.lng
+            currentLocation.results[0].geometry.lat,
+            currentLocation.results[0].geometry.lng
           );
         }}
-      />
-      <Text style={HomeScreenStyle.subHeading}>Previous Locations</Text>
+        // onRemove={}
+        // style={HomeScreenStyle}
+      /> */}
       {previousLocations.length > 0 ? (
-        <FlatList
-          data={previousLocations}
-          // keyExtractor={(item) => item.id}
-          // initialScrollIndex={1}
-          renderItem={renderItem}
-          extraData={refreshFlatlist}
+        <CurrentLocationCard
+          name={
+            previousLocations[0].results[0].formatted
+            // previousLocations[0].cont
+          }
+          time={previousLocations[0].timestamp.created_http}
+          onCardPress={() => {
+            handleCardPress(
+              previousLocations[0].results[0].geometry.lat,
+              previousLocations[0].results[0].geometry.lng
+            );
+          }}
+          // onRemove={}
+          // style={HomeScreenStyle}
         />
       ) : null}
+      <Text style={HomeScreenStyle.subHeading}>Previous Locations</Text>
+      {/* {previousLocations.length > 2 ? ( */}
+      <FlatList
+        data={previousLocations}
+        // keyExtractor={(item) => item.id}
+        // initialScrollIndex={1}
+        // getItemLayout={(data, index) => (
+        //   {length: 93.71428680419922, offset: index * 93.71428680419922 * index, index}
+        // )}
+        getItemLayout={getItemLayout}
+        renderItem={renderItem}
+        extraData={refreshFlatlist}
+      />
+      {/* // ) : null} */}
       <Button
         title="Remove All Locations"
         color={AppColor.red}
