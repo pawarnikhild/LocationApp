@@ -29,34 +29,44 @@ const HomeScreen = () => {
   const [intervalRunning, setIntervalRunning] = useState(false);
 
   useEffect(() => {
-    pushLocation();
+    addLocation();
   }, []);
 
-  const pushLocation = () => {
-    if (previousLocations.length === 5) {
+  const addLocation = () => {
+    if (previousLocations.length >= 5) {
       console.log("Length exceeded");
-    } else if (!intervalRunning) {
+    } else if (intervalRunning) {
+      console.log("Another interval is running");
+    } else {
       setIntervalRunning(true);
-      console.log("IntervalRunning", intervalRunning);
       console.log("Interval started");
       let myInterval = setInterval(async () => {
-        let localArray = previousLocations;
-        let newLocation: any = await reverseGeocode({
-          latitude: 18.519397,
-          longitude: 73.8553399,
-        });
-        localArray.unshift(newLocation);
-        setPreviousLocations([...previousLocations], localArray);
-        if (previousLocations.length >= 5) {
+        try {
+          const newLocation: any = await reverseGeocode({
+            latitude: 18.519397,
+            longitude: 73.8553399,
+          });
+
+          setPreviousLocations((prevLocations) => {
+            const newLocations = [newLocation, ...prevLocations];
+            // Check the length after updating the state
+            if (newLocations.length >= 5) {
+              clearInterval(myInterval);
+              setIntervalRunning(false);
+              console.log("Cleared interval", myInterval);
+            }
+            return newLocations;
+          });
+        } catch (error) {
+          console.error("Error fetching location:", error);
           clearInterval(myInterval);
           setIntervalRunning(false);
-          console.log("Cleared interval", myInterval);
+          console.log("Cleared interval due to an error", myInterval);
         }
       }, 1000);
-    } else {
-      console.log("Another interval is running");
     }
   };
+
 
   const handleCardPress = (lat: number, lng: number, index?: number) => {
     console.log("index", index);
@@ -74,7 +84,7 @@ const HomeScreen = () => {
     setPreviousLocations(localArray);
     console.log("After:", localArray);
     setRefreshFlatList(!refreshFlatlist);
-    pushLocation();
+    addLocation();
   };
 
   const removeAllLocations = () => {
@@ -87,7 +97,7 @@ const HomeScreen = () => {
       console.log("Error in deleting locations");
     }
     setRefreshFlatList(!refreshFlatlist);
-    pushLocation();
+    addLocation();
   };
 
   return (

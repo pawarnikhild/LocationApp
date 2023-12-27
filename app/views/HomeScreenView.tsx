@@ -107,6 +107,7 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
       ) : null}
       <Text style={HomeScreenStyle.subHeading}>Previous Locations</Text>
       {/* {previousLocations.length > 2 ? ( */}
+      <View style={{height: "70%"}}>
       <FlatList
         data={previousLocations}
         // keyExtractor={(item) => item.id}
@@ -118,6 +119,7 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
         renderItem={renderItem}
         extraData={refreshFlatlist}
       />
+      </View>
       {/* // ) : null} */}
       <Button
         title="Remove All Locations"
