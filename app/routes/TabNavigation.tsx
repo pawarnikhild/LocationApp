@@ -12,7 +12,6 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
   return (
-    <NavigationContainer>
       <Tab.Navigator
         screenOptions={{
             tabBarShowLabel: false,
@@ -45,7 +44,6 @@ const TabNavigation = () => {
           }}
         />
       </Tab.Navigator>
-    </NavigationContainer>
   );
 };
 
