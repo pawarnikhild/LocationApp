@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 
 import { reverseGeocode } from "../services/reverseGeocode";
 import AppContext from "../context/AppContext";
+import * as Location from "expo-location";
 
 import HomeScreenView from "../views/HomeScreenView";
 
@@ -27,10 +28,25 @@ const HomeScreen = () => {
   const [count, setCount] = useState(0);
   const [refreshFlatlist, setRefreshFlatList] = useState(false);
   const [intervalRunning, setIntervalRunning] = useState(false);
+  const [isLocationOn, setIsLocationOn] = useState(false);
 
   useEffect(() => {
-    addLocation();
+    turnOnLocation();
+    // addLocation();
   }, []);
+
+  const turnOnLocation = async () => {
+    try {
+      let locationStatus = await Location.enableNetworkProviderAsync();
+      console.log("Location status:", locationStatus); // This return null if location enables
+      if (locationStatus == null) {
+        setIsLocationOn(true);
+        addLocation();
+      }
+    } catch (error) {
+      console.log("Error in enabling location:", error);
+    }
+  };
 
   const addLocation = () => {
     if (previousLocations.length >= 5) {
@@ -67,7 +83,6 @@ const HomeScreen = () => {
     }
   };
 
-
   const handleCardPress = (lat: number, lng: number, index?: number) => {
     console.log("index", index);
     navigation.navigate("Map", { latitude: lat, longitude: lng });
@@ -99,13 +114,16 @@ const HomeScreen = () => {
     setRefreshFlatList(!refreshFlatlist);
     addLocation();
   };
+  // console.log('isLocationOn', isLocationOn)
 
   return (
     // previousLocations.length > 0 ? (
     <HomeScreenView
+      isLocationOn={isLocationOn}
       currentLocation={currentLocation}
       previousLocations={previousLocations}
       refreshFlatlist={refreshFlatlist}
+      turnOnLocation={turnOnLocation}
       handleCardPress={handleCardPress}
       removeLocation={removeLocation}
       removeAllLocations={removeAllLocations}

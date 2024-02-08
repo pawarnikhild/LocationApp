@@ -11,7 +11,7 @@ import UseExp from "./app/experiment/UseExp";
 import ViewDimension from "./app/experiment/ViewDimension";
 import Int from "./app/experiment/Int";
 import Location from "./app/experiment/Location";
-import Location2 from "./app/experiment/Location2";
+import LocationPermissions from "./app/experiment/LocationPermissions";
 import MainStackNavigation from './app/routes/MainStackNavigation'
 import SplashScreen from "./app/models/SplashScreen";
 
@@ -40,7 +40,7 @@ const App = () => {
     // <Int />
     // <ViewDimension />
     // <Location/>
-    // <Location2 />
+    // <LocationPermissions />
     // <MainStackNavigation />
     // <SplashScreen/>
   );

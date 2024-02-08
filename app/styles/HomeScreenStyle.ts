@@ -10,7 +10,17 @@ export default StyleSheet.create({
     },
     subHeading: {
         fontSize: FontSize.large
-    }
-    
+    },
+    enableLocationImage: {
+        height: 350,
+        width: 350,
+        // borderColor: 'red',
+        // borderWidth: 2
 
+    },
+    locationNotOnText: {
+        fontSize: FontSize.heading,
+        textAlign: 'center',
+        marginBottom: 20
+    }
 })
