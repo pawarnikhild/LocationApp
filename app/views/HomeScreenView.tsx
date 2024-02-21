@@ -18,10 +18,11 @@ import GlobleStyles from "../utils/GlobleStyles";
 import HomeScreenStyle from "../styles/HomeScreenStyle";
 
 type HomeScreenViewProps = {
-  isLocationOn: boolean;
+  showListView: boolean;
   currentLocation: {};
   previousLocations: any[];
   refreshFlatlist: boolean;
+  islocationOn: boolean;
   turnOnLocation: () => void;
   handleCardPress: (lat: number, lng: number, index?: number) => void;
   removeLocation: (active: number) => void;
@@ -30,10 +31,11 @@ type HomeScreenViewProps = {
 
 const HomeScreenView = (props: HomeScreenViewProps) => {
   const {
-    isLocationOn,
+    showListView,
     currentLocation,
     previousLocations,
     refreshFlatlist,
+    islocationOn,
     turnOnLocation,
     handleCardPress,
     removeLocation,
@@ -75,7 +77,7 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
   };
   // console.log("previousLocations in View", previousLocations);
   // console.log("previousLocations length in View", previousLocations.length);
-  return isLocationOn ? (
+  return showListView ? (
     <SafeAreaView style={GlobleStyles.appContainer}>
       <StatusBar />
       <Text style={HomeScreenStyle.heading}>Location Manager</Text>
@@ -126,18 +128,26 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
         />
       </View>
       {/* // ) : null} */}
-      <Button
-        title="Remove All Locations"
-        color={AppColor.red}
-        onPress={removeAllLocations}
-      />
+      {islocationOn ? (
+        <Button
+          title="Remove All Locations"
+          color={AppColor.red}
+          onPress={removeAllLocations}
+        />
+      ) : (
+        <Button
+          title="Location turned off! You need to turn on the location so we can track it. Click to turn on"
+          color={'#cc0000'}
+          onPress={turnOnLocation}
+        />
+      )}
     </SafeAreaView>
   ) : (
     <SafeAreaView
       style={{
         ...GlobleStyles.appContainer,
         // justifyContent: "center",
-        alignItems: "center",
+        // alignItems: "center",
       }}
     >
       <Image

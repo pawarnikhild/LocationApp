@@ -28,7 +28,8 @@ const HomeScreen = () => {
   const [count, setCount] = useState(0);
   const [refreshFlatlist, setRefreshFlatList] = useState(false);
   const [intervalRunning, setIntervalRunning] = useState(false);
-  const [isLocationOn, setIsLocationOn] = useState(false);
+  const [showListView, setShowListView] = useState(false);
+  const [isLocationOn, setLocationOn] = useState(false)
 
   useEffect(() => {
     turnOnLocation();
@@ -38,9 +39,10 @@ const HomeScreen = () => {
   const turnOnLocation = async () => {
     try {
       let locationStatus = await Location.enableNetworkProviderAsync();
-      console.log("Location status:", locationStatus); // This return null if location enables
+      console.log("Location status while turning on location:", locationStatus); // This return null if location enables
       if (locationStatus == null) {
-        setIsLocationOn(true);
+        setShowListView(true);
+        setLocationOn(true);
         addLocation();
       }
     } catch (error) {
@@ -57,27 +59,39 @@ const HomeScreen = () => {
       setIntervalRunning(true);
       console.log("Interval started");
       let myInterval = setInterval(async () => {
-        try {
-          const newLocation: any = await reverseGeocode({
-            latitude: 18.519397,
-            longitude: 73.8553399,
-          });
-
-          setPreviousLocations((prevLocations) => {
-            const newLocations = [newLocation, ...prevLocations];
-            // Check the length after updating the state
-            if (newLocations.length >= 5) {
-              clearInterval(myInterval);
-              setIntervalRunning(false);
-              console.log("Cleared interval", myInterval);
-            }
-            return newLocations;
-          });
-        } catch (error) {
-          console.error("Error fetching location:", error);
+        let locationStatus = await Location.hasServicesEnabledAsync();
+        console.log("Location status in Interval:", locationStatus);
+        // This if is for checking is location on everytime before adding location to array
+        if (locationStatus) {
+          try {
+            const newLocation: any = await reverseGeocode({
+              latitude: 18.519397,
+              longitude: 73.8553399,
+            });
+            setPreviousLocations((prevLocations) => {
+              const newLocations = [newLocation, ...prevLocations];
+              // Check the length after updating the state
+              if (newLocations.length >= 5) {
+                clearInterval(myInterval);
+                setIntervalRunning(false);
+                console.log(
+                  "Location array lenght fulfilled, cleared interval!",
+                  myInterval
+                );
+              }
+              return newLocations;
+            });
+          } catch (error) {
+            console.error("Error fetching location:", error);
+            clearInterval(myInterval);
+            setIntervalRunning(false);
+            console.log("Cleared interval due to an error", myInterval);
+          }
+        } else {
+          console.log("Location turned off, hence cleared interval", myInterval);
           clearInterval(myInterval);
           setIntervalRunning(false);
-          console.log("Cleared interval due to an error", myInterval);
+          setLocationOn(false);
         }
       }, 1000);
     }
@@ -114,15 +128,17 @@ const HomeScreen = () => {
     setRefreshFlatList(!refreshFlatlist);
     addLocation();
   };
-  // console.log('isLocationOn', isLocationOn)
+  // console.log('showListView', showListView)
+  console.log('CCCC',isLocationOn)
 
   return (
     // previousLocations.length > 0 ? (
     <HomeScreenView
-      isLocationOn={isLocationOn}
+      showListView={showListView}
       currentLocation={currentLocation}
       previousLocations={previousLocations}
       refreshFlatlist={refreshFlatlist}
+      islocationOn={isLocationOn}
       turnOnLocation={turnOnLocation}
       handleCardPress={handleCardPress}
       removeLocation={removeLocation}

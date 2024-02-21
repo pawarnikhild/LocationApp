@@ -14,6 +14,7 @@ export default StyleSheet.create({
     enableLocationImage: {
         height: 350,
         width: 350,
+        alignSelf: 'center'
         // borderColor: 'red',
         // borderWidth: 2
 

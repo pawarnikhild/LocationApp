@@ -12,18 +12,18 @@ const Stack = createStackNavigator();
 const StackNavigation = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="Splash"
           component={SplashScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Tab"
           component={TabNavigation}
           options={{ title: "Map View" }}
-        />
-         {/* <Stack.Screen
+        /> */}
+         <Stack.Screen
           name="location"
           component={LocationPermissions}
           options={{ headerShown: false }}
@@ -32,7 +32,7 @@ const StackNavigation = () => {
           name="Int"
           component={Int}
           options={{ title: "Map View" }}
-        /> */}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

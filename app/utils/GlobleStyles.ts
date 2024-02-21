@@ -6,6 +6,6 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: AppColor.white,
         paddingHorizontal: 10,
-        paddingBottom: 10
+        paddingBottom: 40
     },
 });

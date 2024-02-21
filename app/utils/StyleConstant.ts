@@ -5,6 +5,7 @@ export const AppColor = {
     white: '#ffffff',
     black: '#000000',
     red: '#ff0000',
+    darkRed: '#cc0000',
     grey: '#808080',
 };
 

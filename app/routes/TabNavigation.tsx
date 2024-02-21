@@ -15,7 +15,8 @@ const TabNavigation = () => {
       <Tab.Navigator
         screenOptions={{
             tabBarShowLabel: false,
-            headerTintColor: AppColor.lightBlue
+            headerTintColor: AppColor.lightBlue,
+            headerShown: false
         }}>
         <Tab.Screen
           name="Home"
