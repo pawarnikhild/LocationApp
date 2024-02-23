@@ -1,46 +1,104 @@
-import * as React from 'react';
-import MapView, { Marker } from 'react-native-maps'
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import React from "react";
+import MapView, { Callout, Marker } from "react-native-maps";
+import { StyleSheet, Text, View, Dimensions } from "react-native";
+import { data } from "../experiment/data";
+import { resultData, actualResultData } from "../experiment/data";
+import GlobleStyles from "../utils/GlobleStyles";
 
-type MapScreenViewProps ={
-  latitude: number
-  longitude: number
-}
+type region = {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+};
+
+type MapScreenViewProps = {
+  latitude: number;
+  longitude: number;
+  selectedRegion: region;
+  initialRegionInLocations: region;
+  previousLocations: any[];
+};
 
 const MapScreenView = (props: MapScreenViewProps) => {
-  const { latitude, longitude } = props;
-  // console.log('On View latitude', latitude, 'longitude', longitude)
+  const {
+    latitude,
+    longitude,
+    selectedRegion,
+    initialRegionInLocations,
+    previousLocations,
+  } = props;
 
   return (
-    <View style={styles.container}>
-      <MapView style={styles.map} 
-      initialRegion={{
-        latitude: props.latitude,
-        longitude: props.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      }}>
-        <Marker coordinate={{
-          latitude: props.latitude,
-          longitude: props.longitude,
-        }}/>
-        
-      </MapView>
+    <View style={GlobleStyles.appContainer}>
+      {selectedRegion !== null ? (
+        <>
+          <MapView
+            style={StyleSheet.absoluteFill}
+            loadingEnabled
+            showsUserLocation
+            showsMyLocationButton
+            initialRegion={selectedRegion}
+          >
+            <Marker
+              coordinate={{
+                latitude: selectedRegion.latitude,
+                longitude: selectedRegion.longitude,
+              }}
+            />
+          </MapView>
+          <Text>One Location MapView</Text>
+        </>
+      ) : (
+        <>
+          <MapView
+            style={StyleSheet.absoluteFill}
+            loadingEnabled
+            showsUserLocation
+            showsMyLocationButton
+            initialRegion={initialRegionInLocations}
+          >
+            {/* {previousLocations.map((item, index) => (
+              <Marker
+                coordinate={{
+                  latitude: item.results[0].geometry.lat,
+                  longitude: item.results[0].geometry.lng,
+                  // item.results[0].geometry.lat
+                }}
+              />
+            ))} */}
+            {actualResultData.map((item, index) => (
+              <Marker
+                key={index}
+                // title={item.results[0].formatted}
+                coordinate={{
+                  latitude: item.results[0].geometry.lat,
+                  longitude: item.results[0].geometry.lng,
+                  // item.results[0].geometry.lat
+                }}
+              >
+                <Callout>
+                  <Text style={{ padding: 10 }}>
+                    {item.results[0].formatted}
+                  </Text>
+                </Callout>
+              </Marker>
+            ))}
+            {/* {data.map((item, index) => (
+              <Marker
+                coordinate={{
+                  latitude: item.latlang.latitude,
+                  longitude: item.latlang.longitude,
+                  // item.results[0].geometry.lat
+                }}
+              />
+            ))} */}
+          </MapView>
+          <Text>All Location MapView</Text>
+        </>
+      )}
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  map: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-});
-
-export default MapScreenView
+export default MapScreenView;

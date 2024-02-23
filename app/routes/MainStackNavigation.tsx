@@ -6,6 +6,8 @@ import LocationPermissions from "../experiment/LocationPermissions";
 import Int from '../experiment/Int'
 import SplashScreen from "../models/SplashScreen";
 import TabNavigation from "./TabNavigation";
+import HomeScreen from "../models/HomeScreen";
+import MapScreen from "../models/MapScreen";
 
 const Stack = createStackNavigator();
 
@@ -13,24 +15,24 @@ const StackNavigation = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{headerShown: false}}>
-        <Stack.Screen
+        {/* <Stack.Screen
           name="Splash"
           component={SplashScreen}
           options={{ headerShown: false }}
         />
-        {/* <Stack.Screen
+        <Stack.Screen
           name="Tab"
           component={TabNavigation}
           options={{ title: "Map View" }}
         /> */}
          <Stack.Screen
-          name="location"
-          component={LocationPermissions}
+          name="Home"
+          component={HomeScreen}
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="Int"
-          component={Int}
+          name="Map"
+          component={MapScreen}
           options={{ title: "Map View" }}
         />
       </Stack.Navigator>

@@ -39,7 +39,7 @@ const HomeScreen = () => {
   const turnOnLocation = async () => {
     try {
       let locationStatus = await Location.enableNetworkProviderAsync();
-      console.log("Location status while turning on location:", locationStatus); // This return null if location enables
+      // console.log("Location status while turning on location:", locationStatus); // This return null if location enables
       if (locationStatus == null) {
         setShowListView(true);
         setLocationOn(true);
@@ -60,7 +60,7 @@ const HomeScreen = () => {
       console.log("Interval started");
       let myInterval = setInterval(async () => {
         let locationStatus = await Location.hasServicesEnabledAsync();
-        console.log("Location status in Interval:", locationStatus);
+        // console.log("Location status in Interval:", locationStatus);
         // This if is for checking is location on everytime before adding location to array
         if (locationStatus) {
           try {
@@ -103,6 +103,12 @@ const HomeScreen = () => {
     // console.log("card pressed")
   };
 
+  const handleSeeAllLocation = () => {
+    navigation.navigate("Map");
+    // console.log("card pressed")
+  };
+
+
   const removeLocation = (index: number) => {
     console.log("removeLocation pressed");
     console.log("index", index);
@@ -129,7 +135,7 @@ const HomeScreen = () => {
     addLocation();
   };
   // console.log('showListView', showListView)
-  console.log('CCCC',isLocationOn)
+  // console.log('CCCC',isLocationOn)
 
   return (
     // previousLocations.length > 0 ? (
@@ -143,6 +149,7 @@ const HomeScreen = () => {
       handleCardPress={handleCardPress}
       removeLocation={removeLocation}
       removeAllLocations={removeAllLocations}
+      handleSeeAllLocation={handleSeeAllLocation}
     />
     // ) : (
     //   null

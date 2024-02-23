@@ -32,7 +32,7 @@ export const reverseGeocode = async (payload: {
       //     }
         
       // })
-      console.log('result in service', result);
+      // console.log('result in service', result);
     } else {
       console.log('Error in getting payload');
     }

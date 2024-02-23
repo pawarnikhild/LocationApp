@@ -27,6 +27,7 @@ type HomeScreenViewProps = {
   handleCardPress: (lat: number, lng: number, index?: number) => void;
   removeLocation: (active: number) => void;
   removeAllLocations: () => void;
+  handleSeeAllLocation: () => void
 };
 
 const HomeScreenView = (props: HomeScreenViewProps) => {
@@ -40,6 +41,7 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
     handleCardPress,
     removeLocation,
     removeAllLocations,
+    handleSeeAllLocation
   } = props;
 
   const getItemLayout = (data, index: number) => ({
@@ -75,7 +77,7 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
       return null;
     }
   };
-  // console.log("previousLocations in View", previousLocations);
+  // console.log("previousLocations in View", JSON.stringify(previousLocations));
   // console.log("previousLocations length in View", previousLocations.length);
   return showListView ? (
     <SafeAreaView style={GlobleStyles.appContainer}>
@@ -141,6 +143,11 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
           onPress={turnOnLocation}
         />
       )}
+       <Button
+          title="See All Locations"
+          color={AppColor.black}
+          onPress={(handleSeeAllLocation)}
+        />
     </SafeAreaView>
   ) : (
     <SafeAreaView
