@@ -1,10 +1,13 @@
 import React, { useState, useEffect, useContext } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Platform } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-
-import { reverseGeocode } from "../services/reverseGeocode";
-import AppContext from "../context/AppContext";
 import * as Location from "expo-location";
+import Toast from "react-native-toast-message";
+
+import AppContext from "../context/AppContext";
+import { reverseGeocode } from "../services/reverseGeocode";
+import { showAndroidToast } from "../utils/toastConfig";
+import { toastMessages } from "../utils/toastMessages";
 
 import HomeScreenView from "../views/HomeScreenView";
 
@@ -29,12 +32,25 @@ const HomeScreen = () => {
   const [refreshFlatlist, setRefreshFlatList] = useState(false);
   const [intervalRunning, setIntervalRunning] = useState(false);
   const [showListView, setShowListView] = useState(false);
-  const [isLocationOn, setLocationOn] = useState(false)
+  const [isLocationOn, setLocationOn] = useState(false);
 
   useEffect(() => {
     turnOnLocation();
     // addLocation();
   }, []);
+
+  type message = {
+    text1: string,
+    text2: string,
+    type: string
+  }
+
+  const showToast = (message:message) => {
+    console.log(message)
+    Platform.OS === "android"
+    ? showAndroidToast(message.text1) 
+    : Toast.show(message); 
+  }
 
   const turnOnLocation = async () => {
     try {
@@ -58,6 +74,7 @@ const HomeScreen = () => {
     } else {
       setIntervalRunning(true);
       console.log("Interval started");
+      showToast(toastMessages.startedTrackingLocation)
       let myInterval = setInterval(async () => {
         let locationStatus = await Location.hasServicesEnabledAsync();
         // console.log("Location status in Interval:", locationStatus);
@@ -75,10 +92,12 @@ const HomeScreen = () => {
                 clearInterval(myInterval);
                 setIntervalRunning(false);
                 console.log(
-                  "Location array lenght fulfilled, cleared interval!",
+                  "Location array lenght fulfilled, cleared interval",
                   myInterval
                 );
+                showToast(toastMessages.stoppedTrackingLocation)
               }
+              showToast(toastMessages.addedLocation)
               return newLocations;
             });
           } catch (error) {
@@ -89,6 +108,7 @@ const HomeScreen = () => {
           }
         } else {
           console.log("Location turned off, hence cleared interval", myInterval);
+          showToast(toastMessages.turnedOffLocation)
           clearInterval(myInterval);
           setIntervalRunning(false);
           setLocationOn(false);
@@ -119,6 +139,7 @@ const HomeScreen = () => {
     setPreviousLocations(localArray);
     console.log("After:", localArray);
     setRefreshFlatList(!refreshFlatlist);
+    showToast(toastMessages.removedLocation)
     addLocation();
   };
 
@@ -132,6 +153,7 @@ const HomeScreen = () => {
       console.log("Error in deleting locations");
     }
     setRefreshFlatList(!refreshFlatlist);
+    showToast(toastMessages.removedAllLocation)
     addLocation();
   };
   // console.log('showListView', showListView)

@@ -4,6 +4,10 @@ import { View, Text } from "react-native";
 import TabNavigation from "./app/routes/TabNavigation";
 import StackNavigation from "./app/routes/StackNavigation";
 
+import Toast from 'react-native-toast-message';
+import { toastConfig } from "./app/utils/toastConfig";
+
+
 import AppContext from "./app/context/AppContext";
 
 import ResetCheck from "./app/experiment/ResetCheck";
@@ -34,6 +38,7 @@ const App = () => {
       {/* <TabNavigation /> */}
       {/* <StackNavigation /> */}
       <MainStackNavigation />
+      <Toast config={toastConfig} />
     </AppContext.Provider>
     // <UseExp />
     // <ResetCheck />
