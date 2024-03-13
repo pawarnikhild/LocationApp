@@ -17,7 +17,7 @@ type MapScreenViewProps = {
   longitude: number;
   selectedRegion: region;
   initialRegionInLocations: region;
-  previousLocations: any[];
+  locations: any[];
 };
 
 const MapScreenView = (props: MapScreenViewProps) => {
@@ -26,7 +26,7 @@ const MapScreenView = (props: MapScreenViewProps) => {
     longitude,
     selectedRegion,
     initialRegionInLocations,
-    previousLocations,
+    locations,
   } = props;
 
   return (
@@ -58,7 +58,7 @@ const MapScreenView = (props: MapScreenViewProps) => {
             showsMyLocationButton
             initialRegion={initialRegionInLocations}
           >
-            {/* {previousLocations.map((item, index) => (
+            {/* {locations.map((item, index) => (
               <Marker
                 coordinate={{
                   latitude: item.results[0].geometry.lat,

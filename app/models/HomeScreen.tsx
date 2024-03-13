@@ -14,15 +14,9 @@ import HomeScreenView from "../views/HomeScreenView";
 const HomeScreen = () => {
   const navigation = useNavigation();
   // type locationsType = {
-  //   currentLocation: {},
-  //   previousLocations: any[]
+  //   locations: any[]
   // }
-  const {
-    currentLocation,
-    previousLocations,
-    setCurrentLocation,
-    setPreviousLocations,
-  } = useContext(AppContext);
+  const { locations, setLocations } = useContext(AppContext);
 
   const payload = {
     latitude: 52.387783,
@@ -40,22 +34,26 @@ const HomeScreen = () => {
   }, []);
 
   type message = {
-    text1: string,
-    text2: string,
-    type: string
-  }
+    text1: string;
+    text2: string;
+    type: string;
+  };
 
-  const showToast = (message:message) => {
-    console.log(message)
+  const showToast = (message: message) => {
+    console.log(message.text1);
     Platform.OS === "android"
-    ? showAndroidToast(message.text1) 
-    : Toast.show(message); 
-  }
+      ? showAndroidToast(message.text1)
+      : Toast.show(message);
+  };
+
+  const checkIsLocationOn = async () => {
+    let locationStatus = await Location.hasServicesEnabledAsync();
+    return locationStatus;
+  };
 
   const turnOnLocation = async () => {
     try {
-      let locationStatus = await Location.enableNetworkProviderAsync();
-      // console.log("Location status while turning on location:", locationStatus); // This return null if location enables
+      let locationStatus = await Location.enableNetworkProviderAsync(); // This return null if location enables
       if (locationStatus == null) {
         setShowListView(true);
         setLocationOn(true);
@@ -66,39 +64,33 @@ const HomeScreen = () => {
     }
   };
 
-  const addLocation = () => {
-    if (previousLocations.length >= 5) {
-      console.log("Length exceeded");
-    } else if (intervalRunning) {
+  const addLocation = async () => {
+    if (intervalRunning) {
       console.log("Another interval is running");
     } else {
       setIntervalRunning(true);
       console.log("Interval started");
-      showToast(toastMessages.startedTrackingLocation)
+      await checkIsLocationOn() && showToast(toastMessages.startedTrackingLocation);
       let myInterval = setInterval(async () => {
-        let locationStatus = await Location.hasServicesEnabledAsync();
-        // console.log("Location status in Interval:", locationStatus);
-        // This if is for checking is location on everytime before adding location to array
-        if (locationStatus) {
+        // Confirming location is on everytime before tracking
+        if (await checkIsLocationOn()) {
           try {
             const newLocation: any = await reverseGeocode({
               latitude: 18.519397,
               longitude: 73.8553399,
             });
-            setPreviousLocations((prevLocations) => {
+            setLocations((prevLocations) => {
               const newLocations = [newLocation, ...prevLocations];
-              // Check the length after updating the state
-              if (newLocations.length >= 5) {
+              // Evaluating the length to determine wheather to add a location or retain the state as it is
+              if (newLocations.length > 5) {
                 clearInterval(myInterval);
                 setIntervalRunning(false);
-                console.log(
-                  "Location array lenght fulfilled, cleared interval",
-                  myInterval
-                );
-                showToast(toastMessages.stoppedTrackingLocation)
+                showToast(toastMessages.stoppedTrackingLocation);
+                return prevLocations;
+              } else {
+                showToast(toastMessages.addedLocation);
+                return newLocations;
               }
-              showToast(toastMessages.addedLocation)
-              return newLocations;
             });
           } catch (error) {
             console.error("Error fetching location:", error);
@@ -107,64 +99,46 @@ const HomeScreen = () => {
             console.log("Cleared interval due to an error", myInterval);
           }
         } else {
-          console.log("Location turned off, hence cleared interval", myInterval);
-          showToast(toastMessages.turnedOffLocation)
           clearInterval(myInterval);
           setIntervalRunning(false);
           setLocationOn(false);
+          showToast(toastMessages.turnedOffLocation);
         }
       }, 1000);
     }
   };
 
   const handleCardPress = (lat: number, lng: number, index?: number) => {
-    console.log("index", index);
     navigation.navigate("Map", { latitude: lat, longitude: lng });
-    // console.log("card pressed")
   };
 
   const handleSeeAllLocation = () => {
     navigation.navigate("Map");
-    // console.log("card pressed")
   };
 
-
   const removeLocation = (index: number) => {
-    console.log("removeLocation pressed");
     console.log("index", index);
-    let localArray = previousLocations;
-    console.log("Before:", localArray);
-    // localArray.filter(obj => obj.index != index)
+    let localArray = locations;
     localArray.splice(index, 1);
-    setPreviousLocations(localArray);
-    console.log("After:", localArray);
+    setLocations(localArray);
     setRefreshFlatList(!refreshFlatlist);
-    showToast(toastMessages.removedLocation)
+    showToast(toastMessages.removedLocation);
     addLocation();
   };
 
   const removeAllLocations = () => {
-    let localArray = previousLocations;
-    localArray.splice(0, localArray.length);
-    if (!localArray.length) {
-      setPreviousLocations(localArray);
-      console.log("Deleted all previous locations");
-    } else {
-      console.log("Error in deleting locations");
-    }
+    let localArray = locations;
+    localArray.splice(0);
+    setLocations(localArray);
     setRefreshFlatList(!refreshFlatlist);
-    showToast(toastMessages.removedAllLocation)
+    showToast(toastMessages.removedAllLocation);
     addLocation();
   };
-  // console.log('showListView', showListView)
-  // console.log('CCCC',isLocationOn)
 
   return (
-    // previousLocations.length > 0 ? (
     <HomeScreenView
       showListView={showListView}
-      currentLocation={currentLocation}
-      previousLocations={previousLocations}
+      locations={locations}
       refreshFlatlist={refreshFlatlist}
       islocationOn={isLocationOn}
       turnOnLocation={turnOnLocation}
@@ -173,9 +147,6 @@ const HomeScreen = () => {
       removeAllLocations={removeAllLocations}
       handleSeeAllLocation={handleSeeAllLocation}
     />
-    // ) : (
-    //   null
-    // )
   );
 };
 

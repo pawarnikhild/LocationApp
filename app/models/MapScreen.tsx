@@ -7,7 +7,7 @@ import MapScreenView from "../views/MapScreenView";
 import { resultData } from "../experiment/data";
 
 const MapScreen = () => {
-  const { previousLocations } = useContext(AppContext);
+  const { locations } = useContext(AppContext);
   const route = useRoute();
   const { latitude = null, longitude = null } = route.params || {};
   const [selectedRegion, setSelectedRegion] = useState(null);
@@ -43,7 +43,7 @@ const MapScreen = () => {
   };
 
   // console.log('latitude in MapScreen', latitude, 'longitude in MapScreen', longitude)
-  // console.log('previousLocations in MapScreen', previousLocations.length)
+  // console.log('locations in MapScreen', locations.length)
   // console.log('selectedRegion in MapScreen', selectedRegion)
   // console.log('initialRegionInLocations in MapScreen', initialRegionInLocations)
 
@@ -53,8 +53,8 @@ const MapScreen = () => {
       longitude={longitude}
       selectedRegion={selectedRegion}
       initialRegionInLocations={initialRegionInLocations}
-      // previousLocations={previousLocations}
-      previousLocations={resultData}
+      // locations={locations}
+      locations={resultData}
     />
   );
 };

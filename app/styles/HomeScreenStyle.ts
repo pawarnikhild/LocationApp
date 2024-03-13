@@ -23,5 +23,13 @@ export default StyleSheet.create({
         fontSize: FontSize.heading,
         textAlign: 'center',
         marginBottom: 20
-    }
+    },
+    // List View Styles -
+    bottomView: {
+        width: "100%",
+        position: "absolute",
+        alignSelf: 'center',
+        bottom: 10,
+        justifyContent: 'space-between'
+      }
 })

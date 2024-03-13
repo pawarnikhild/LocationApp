@@ -19,29 +19,27 @@ import HomeScreenStyle from "../styles/HomeScreenStyle";
 
 type HomeScreenViewProps = {
   showListView: boolean;
-  currentLocation: {};
-  previousLocations: any[];
+  locations: any[];
   refreshFlatlist: boolean;
   islocationOn: boolean;
   turnOnLocation: () => void;
   handleCardPress: (lat: number, lng: number, index?: number) => void;
   removeLocation: (active: number) => void;
   removeAllLocations: () => void;
-  handleSeeAllLocation: () => void
+  handleSeeAllLocation: () => void;
 };
 
 const HomeScreenView = (props: HomeScreenViewProps) => {
   const {
     showListView,
-    currentLocation,
-    previousLocations,
+    locations,
     refreshFlatlist,
     islocationOn,
     turnOnLocation,
     handleCardPress,
     removeLocation,
     removeAllLocations,
-    handleSeeAllLocation
+    handleSeeAllLocation,
   } = props;
 
   const getItemLayout = (data, index: number) => ({
@@ -51,13 +49,13 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
   });
 
   const renderItem = ({ item, index }) => {
-    if (index < previousLocations.length - 1) {
+    if (index < locations.length - 1) {
       return (
         <PreviousLocationCard
           key={index}
           name={
-            // item.results[0].formatted
-            index
+            item.results[0].formatted
+            // index
           }
           time={item.timestamp.created_http}
           onCardPress={() => {
@@ -70,91 +68,18 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
           onRemove={() => {
             removeLocation(index);
           }}
-          // style={HomeScreenStyle}
         />
       );
     } else {
       return null;
     }
   };
-  // console.log("previousLocations in View", JSON.stringify(previousLocations));
-  // console.log("previousLocations length in View", previousLocations.length);
-  return showListView ? (
-    <SafeAreaView style={GlobleStyles.appContainer}>
-      <StatusBar />
-      <Text style={HomeScreenStyle.heading}>Location Manager</Text>
-      <Text style={HomeScreenStyle.subHeading}>Current Location</Text>
-      {/* <Icon name='map' size={50}/> */}
-      {/* <CurrentLocationCard
-        name={currentLocation.results[0].formatted}
-        time={currentLocation.timestamp.created_http}
-        onCardPress={() => {
-          handleCardPress(
-            currentLocation.results[0].geometry.lat,
-            currentLocation.results[0].geometry.lng
-          );
-        }}
-        // onRemove={}
-        // style={HomeScreenStyle}
-      /> */}
-      {previousLocations.length > 0 ? (
-        <CurrentLocationCard
-          name={
-            previousLocations[0].results[0].formatted
-            // previousLocations[0].cont
-          }
-          time={previousLocations[0].timestamp.created_http}
-          onCardPress={() => {
-            handleCardPress(
-              previousLocations[0].results[0].geometry.lat,
-              previousLocations[0].results[0].geometry.lng
-            );
-          }}
-          // onRemove={}
-          // style={HomeScreenStyle}
-        />
-      ) : null}
-      <Text style={HomeScreenStyle.subHeading}>Previous Locations</Text>
-      {/* {previousLocations.length > 2 ? ( */}
-      <View style={{ height: "70%" }}>
-        <FlatList
-          data={previousLocations}
-          // keyExtractor={(item) => item.id}
-          // initialScrollIndex={1}
-          // getItemLayout={(data, index) => (
-          //   {length: 93.71428680419922, offset: index * 93.71428680419922 * index, index}
-          // )}
-          getItemLayout={getItemLayout}
-          renderItem={renderItem}
-          extraData={refreshFlatlist}
-        />
-      </View>
-      {/* // ) : null} */}
-      {islocationOn ? (
-        <Button
-          title="Remove All Locations"
-          color={AppColor.red}
-          onPress={removeAllLocations}
-        />
-      ) : (
-        <Button
-          title="Location turned off! You need to turn on the location so we can track it. Click to turn on"
-          color={'#cc0000'}
-          onPress={turnOnLocation}
-        />
-      )}
-       <Button
-          title="See All Locations"
-          color={AppColor.black}
-          onPress={(handleSeeAllLocation)}
-        />
-    </SafeAreaView>
-  ) : (
+
+  return !showListView ? (
     <SafeAreaView
       style={{
         ...GlobleStyles.appContainer,
-        // justifyContent: "center",
-        // alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <Image
@@ -169,6 +94,61 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
         onPress={turnOnLocation}
         color={AppColor.black}
       />
+    </SafeAreaView>
+  ) : (
+    <SafeAreaView style={GlobleStyles.appContainer}>
+      <StatusBar />
+      <Text style={HomeScreenStyle.heading}>Location Manager</Text>
+      <Text style={HomeScreenStyle.subHeading}>Current Location</Text>
+      {/* <Icon name='map' size={50}/> */}
+      {locations.length > 0 && (
+        <CurrentLocationCard
+          name={
+            locations[0].results[0].formatted
+            // locations[0].cont
+          }
+          time={locations[0].timestamp.created_http}
+          onCardPress={() => {
+            handleCardPress(
+              locations[0].results[0].geometry.lat,
+              locations[0].results[0].geometry.lng
+            );
+          }}
+        />
+      )}
+      <Text style={HomeScreenStyle.subHeading}>Previous Locations</Text>
+      <View style={{ height: islocationOn ? "68%" : "61%" }}>
+        <FlatList
+          data={locations}
+          getItemLayout={getItemLayout}
+          renderItem={renderItem}
+          extraData={refreshFlatlist}
+        />
+      </View>
+      <View
+        style={{
+          ...HomeScreenStyle.bottomView,
+          height: islocationOn ? 80 : 140,
+        }}
+      >
+        {!islocationOn && (
+          <Button
+            title="Location turned off! You need to turn on the location so we can track it. Click to turn on"
+            color={"#cc0000"}
+            onPress={turnOnLocation}
+          />
+        )}
+        <Button
+          title="Remove All Locations"
+          color={AppColor.red}
+          onPress={removeAllLocations}
+        />
+        <Button
+          title="See All Locations"
+          color={AppColor.black}
+          onPress={handleSeeAllLocation}
+        />
+      </View>
     </SafeAreaView>
   );
 };

@@ -3,28 +3,29 @@ import React, {Component, ComponentType} from 'react';
 import Toast, { BaseToast, ErrorToast, InfoToast } from 'react-native-toast-message';
 import { AppColor } from './StyleConstant';
 
-// This is for Android
+// For Android
 export const showAndroidToast = (msg: string) => {
   ToastAndroid.show(msg, ToastAndroid.SHORT);
 };
 
-// This is for IOS
+// For IOS
 // HOC -
 const CommonToast = (Component: ComponentType<any>, color: string) => (props: any) => (
   <Component
     {...props}
     style={{
-      height: 70,
+      height: 'auto',
       width: '90%',
       borderLeftColor: color,
       borderRightColor: color,
       borderLeftWidth: 7,
       borderRightWidth: 7,
+      padding: 10
     }}
-    // contentContainerStyle={{paddingHorizontal: 15}}
     text1Style={{
       fontSize: 18,
     }}
+    text2NumberOfLines={4}
     text2Style={{
       fontSize: 15
     }}
