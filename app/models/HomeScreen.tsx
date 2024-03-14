@@ -64,8 +64,25 @@ const HomeScreen = () => {
     }
   };
 
+  const getCurrentLocation = async () => {
+    try {
+      console.log("Printx");
+      let currentLocation = await Location.getCurrentPositionAsync({});
+      // let currentLocation = await Location.getLastKnownPositionAsync();
+      console.log("currentLocation", currentLocation);
+      return {
+        latitude: currentLocation.coords.latitude,
+        longitude: currentLocation.coords.longitude,
+      };
+    } catch (error) {
+      console.log("Error in getting current Location: ", error);
+    }
+  };
+
   const addLocation = async () => {
-    if (intervalRunning) {
+    if (locations.length >= 5) {
+      console.log("Saved, length exceeded"); // After changing code addLocation gets executed hence to avoid unnecessary calling
+    } else if (intervalRunning) {
       console.log("Another interval is running");
     } else {
       setIntervalRunning(true);
@@ -75,10 +92,8 @@ const HomeScreen = () => {
         // Confirming location is on everytime before tracking
         if (await checkIsLocationOn()) {
           try {
-            const newLocation: any = await reverseGeocode({
-              latitude: 18.519397,
-              longitude: 73.8553399,
-            });
+            const currentLocation = await getCurrentLocation();
+            const newLocation: any = await reverseGeocode(currentLocation);
             setLocations((prevLocations) => {
               const newLocations = [newLocation, ...prevLocations];
               // Evaluating the length to determine wheather to add a location or retain the state as it is

@@ -42,12 +42,6 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
     handleSeeAllLocation,
   } = props;
 
-  const getItemLayout = (data, index: number) => ({
-    length: 93.71428680419922,
-    offset: index * 93.71428680419922 * index,
-    index,
-  });
-
   const renderItem = ({ item, index }) => {
     if (index < locations.length - 1) {
       return (
@@ -120,7 +114,6 @@ const HomeScreenView = (props: HomeScreenViewProps) => {
       <View style={{ height: islocationOn ? "68%" : "61%" }}>
         <FlatList
           data={locations}
-          getItemLayout={getItemLayout}
           renderItem={renderItem}
           extraData={refreshFlatlist}
         />
